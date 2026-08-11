@@ -60,14 +60,10 @@ Single-frame Vision-Language-Action (VLA) models such as $\pi_{0.5}$ cannot reta
 ## 🎥 Demo
 
 <p align="center">
-  <a href="./demo/realworld_demo.mp4">
-    <img width="100%" alt="StreamPI real-world robot demonstration" src="./demo/realworld_demo_cover.jpg">
-  </a>
-  <br>
-  <a href="./demo/realworld_demo.mp4"><strong>▶ Watch the 2:07 real-world demonstration (MP4)</strong></a>
+  <a href="./demo/realworld_demo.mp4"><strong>▶ Click to play the 2:07 real-world demonstration (MP4)</strong></a>
 </p>
 
-The video showcases StreamPI on precise perception and memory-dependent manipulation tasks. Click the preview above to play the full demonstration.
+The video showcases StreamPI on precise perception and memory-dependent manipulation tasks.
 
 ## 📰 News
 
