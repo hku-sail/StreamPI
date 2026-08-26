@@ -71,8 +71,8 @@ The animated preview showcases StreamPI on precise perception and memory-depende
 
 ## 📰 News
 
-- **August 15, 2026:** Code and model weights will be released.
-- **August 14, 2026:** The paper will be released.
+- **August 30, 2026:** Code and model weights will be released.
+- **August 27, 2026:** The paper is released.
 
 ## ✨ Abstract
 
