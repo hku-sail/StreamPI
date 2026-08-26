@@ -1,0 +1,32 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+
+# Caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Logs & data
+*.log
+data/
+
+# ML artifacts
+wandb/
+outputs/
+checkpoints/
+
+# OS / Editor
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Secrets
+.env
