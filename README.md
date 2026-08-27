@@ -275,7 +275,22 @@ python scripts/train.py pi05_libero_stream5 \
 
 For the repository's CALVIN training examples, see [`train_stream5_calvin.sh`](train_stream5_calvin.sh) and [`train_stream3_calvin.sh`](train_stream3_calvin.sh).
 
-For multi-node training, see [`train_stream5_calvin_4_nodes.sh`](train_stream5_calvin_4_nodes.sh) and [`train_stream5_libero_4_nodes.sh`](train_stream5_libero_4_nodes.sh). The launcher initializes JAX distributed training from the `MASTER_ADDR`, `MASTER_PORT`, `NNODES`, and `NODE_RANK` environment variables:
+#### JAX Multi-Node Distributed Training
+
+StreamPI extends the upstream `openpi` training pipeline with a **fully validated JAX multi-node distributed training path**. [`scripts/train_multi_node.py`](scripts/train_multi_node.py) uses `jax.distributed.initialize` to form one global device mesh across all nodes, combines data parallelism with Fully Sharded Data Parallel (FSDP), partitions the global batch across processes, and coordinates checkpoint saving and restoration across hosts. The model architecture, training objective, optimizer, and learning-rate schedule remain unchanged, so multi-node training preserves single-node model performance while **substantially reducing wall-clock training time**.
+
+Run the same training command on every node after setting the shared coordinator address and a unique zero-based rank for each node:
+
+```bash
+export MASTER_ADDR=<rank-0-host>
+export MASTER_PORT=6060
+export NNODES=4
+export NODE_RANK=<0-3>
+```
+
+`--batch-size` denotes the global batch size and must be divisible by the global JAX device count and the number of nodes. `--fsdp-devices` controls the width of the FSDP axis and must divide the total number of devices. For example, four 8-GPU nodes with `--fsdp-devices=8` form a global mesh with four-way data parallelism and eight-way FSDP.
+
+Ready-to-use four-node launchers are provided in [`train_stream5_calvin_4_nodes.sh`](train_stream5_calvin_4_nodes.sh) and [`train_stream5_libero_4_nodes.sh`](train_stream5_libero_4_nodes.sh). A LIBERO launch command is:
 
 ```bash
 python -u scripts/train_multi_node.py pi05_libero_stream5 \
