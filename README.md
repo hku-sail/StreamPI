@@ -17,7 +17,7 @@
   <br>
   <strong><a href="https://provencestar.github.io/">Junyi Li</a><sup>1</sup></strong>
   &nbsp;&nbsp;
-  <strong>Ruihua Han<sup>1</sup></strong>
+  <strong><a href="https://scholar.google.com/citations?user=BMuEK90AAAAJ&amp;hl=zh-CN">Ruihua Han</a><sup>1</sup></strong>
   &nbsp;&nbsp;
   <strong><a href="https://scholar.google.com/citations?user=vpjnH7AAAAAJ&hl=en">Zhi Hou</a><sup>2</sup></strong>
   &nbsp;&nbsp;
