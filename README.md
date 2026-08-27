@@ -37,7 +37,7 @@
   <a href="./demo/realworld_demo.mp4"><img alt="Demo Video" src="https://img.shields.io/badge/Demo-2%3A07_MP4-7B61FF.svg"></a>
 </p>
 
-<strong>Official implementation of StreamPI, built on <a href="https://github.com/Physical-Intelligence/openpi">openpi</a>, with support for single-node and multi-node training.</strong>
+Official implementation of StreamPI, built on <a href="https://github.com/Physical-Intelligence/openpi">openpi</a>, with additional, fully validated support for <strong>JAX multi-node distributed training</strong> beyond the standard single-node setup, enabling <strong>substantially more efficient training without compromising model performance</strong>.
 
 </div>
 
