@@ -13,11 +13,11 @@
   &nbsp;&nbsp;
   <strong><a href="https://www.linkedin.com/in/xianzhefan">Xianzhe Fan</a><sup>1</sup></strong>
   &nbsp;&nbsp;
-  <strong>Junwei Luo<sup>1</sup></strong>
+  <strong><a href="https://scholar.google.com/citations?user=6XibZaYAAAAJ&amp;hl=zh-CN">Junwei Luo</a><sup>1</sup></strong>
   <br>
   <strong><a href="https://provencestar.github.io/">Junyi Li</a><sup>1</sup></strong>
   &nbsp;&nbsp;
-  <strong><a href="https://scholar.google.com/citations?hl=en&user=6XibZaYAAAAJ">Ruihua Han</a><sup>1</sup></strong>
+  <strong>Ruihua Han<sup>1</sup></strong>
   &nbsp;&nbsp;
   <strong><a href="https://scholar.google.com/citations?user=vpjnH7AAAAAJ&hl=en">Zhi Hou</a><sup>2</sup></strong>
   &nbsp;&nbsp;
@@ -32,7 +32,7 @@
 </p>
 
 <p>
-  <img alt="arXiv: coming soon" src="https://img.shields.io/badge/arXiv-coming_soon-b31b1b.svg">
+  <a href="https://arxiv.org/abs/2608.26067"><img alt="arXiv: 2608.26067" src="https://img.shields.io/badge/arXiv-2608.26067-b31b1b.svg"></a>
   <a href="https://happinesslz.github.io/projects/StreamPI"><img alt="Project Page" src="https://img.shields.io/badge/Project_Page-StreamPI-82B366.svg"></a>
   <a href="./demo/realworld_demo.mp4"><img alt="Demo Video" src="https://img.shields.io/badge/Demo-2%3A07_MP4-7B61FF.svg"></a>
 </p>
@@ -72,13 +72,13 @@ The animated preview showcases StreamPI on precise perception and memory-depende
 ## 📰 News
 
 - **August 30, 2026:** Code and model weights will be released.
-- **August 27, 2026:** The paper is released.
+- **August 26, 2026:** The paper is released on arXiv.
 
 ## ✨ Abstract
 
 Vision-Language-Action models have demonstrated strong performance in robot manipulation, yet leading models such as $\pi_{0.5}$ still operate one frame at a time. This single-frame paradigm limits both temporal memory and the precise spatial perception that can emerge from aggregating observations over time. **StreamPI** is a streaming multimodal temporal modeling framework that adds these capabilities without introducing any new model parameters.
 
-The central design is *instruction-anchored temporal modeling*. StreamPI treats each (visual observation, language instruction) pair as an atomic temporal unit: bidirectional attention within a pair enables full cross-modal fusion, while causal attention across pairs supports autoregressive streaming inference. The instruction therefore remains a persistent semantic anchor throughout execution. A complementary *random-interval streaming training* strategy improves robustness to variable frame rates and asynchronous observation arrival. By relying on the LLM backbone's length extrapolation, StreamPI inherits all pretrained $\pi_{0.5}$ weights and supports both single-frame and multi-frame inference. Experiments on real robots and LIBERO show consistent gains on memory-dependent and precise-perception tasks.
+The central design is *instruction-anchored temporal modeling*. StreamPI treats each (visual observation, language instruction) pair as an atomic temporal unit: bidirectional attention within a pair enables full cross-modal fusion, while causal attention across pairs supports autoregressive streaming inference. The instruction therefore remains a persistent semantic anchor throughout execution. A complementary *random-interval streaming training* strategy improves robustness to variable frame rates and asynchronous observation arrival. By relying on the LLM backbone's length extrapolation, StreamPI inherits all pretrained $\pi_{0.5}$ weights and supports both single-frame and multi-frame inference. Experiments on real robots, LIBERO, and CALVIN show consistent gains from temporal modeling.
 
 ## 🧠 Method
 
@@ -100,7 +100,7 @@ Re-anchoring the instruction at every time step prevents instruction forgetting 
 
 ### Random-Interval Streaming Training
 
-Real robots produce asynchronous observation streams with variable timing. Given a base interval $\bar{\delta}$, StreamPI samples a perturbation $\epsilon \sim \mathcal{U}(-\Delta, +\Delta)$ and uses the clipped interval $\delta = \bar{\delta} + \epsilon$. In the paper's training protocol, $\delta$ is sampled from $[3, 7]$, exposing the model to temporal spacings around a nominal five-frame interval.
+Real robots produce asynchronous observation streams with variable timing. At each historical sampling step $i$, StreamPI perturbs a base interval $\bar{\delta}$ with $\epsilon_i \sim \mathcal{U}(-\Delta, +\Delta)$ and clips $\delta_i = \bar{\delta} + \epsilon_i$ to $[\delta_{\min}, \delta_{\max}]$. Historical frames are selected at cumulative offsets such as $t-\delta_1$ and $t-\delta_1-\delta_2$. In the paper's training protocol, each interval is sampled uniformly from $[3, 7]$.
 
 StreamPI also samples a masking count $k \in \{0, \ldots, T-1\}$ and hides the earliest $k$ units in a training sequence. This temporal masking simulates the incremental context available at the beginning of streaming inference. Together, randomized intervals and temporal masking reduce the mismatch between synchronous training data and asynchronous deployment.
 
@@ -153,7 +153,7 @@ LIBERO contains four suites - Spatial, Object, Goal, and Long - with 10 tasks pe
 | MemoryVLA             |    98.4 |   98.4 | 96.4 | 93.4 | 96.5 |
 | $\pi_0$               |    96.8 |   98.8 | 95.8 | 85.2 | 94.2 |
 | $\pi_{0.5}$           | **98.8** | 98.2 | 96.8 | 92.4 | 96.9 |
-| **StreamPI ($T=3$)**  | **98.8** | 98.6 | 98.6 | 93.8 | 97.3 |
+| **StreamPI ($T=3$)**  | **98.6** | 98.6 | 98.6 | 93.8 | 97.5 |
 | **StreamPI ($T=5$)**  | **98.8** | **99.8** | **99.6** | **95.0** | **98.3** |
 
 ### Key Ablations
@@ -177,10 +177,12 @@ Mean latency over 20 real-robot trials on one NVIDIA GeForce RTX 4090. Extending
 |                1 |        $94.4 \pm 3.4$ |                 N/A |
 |                3 |        $97.9 \pm 5.1$ |              3.5 ms |
 |                5 |       $103.6 \pm 6.3$ |              9.2 ms |
+|                8 |      $110.9 \pm 10.2$ |             16.5 ms |
+|               10 |      $117.9 \pm 16.5$ |             23.5 ms |
 
-### Additional CALVIN Benchmark
+### CALVIN Benchmark
 
-CALVIN is an additional benchmark supported by this repository and is not part of the experiments reported in the StreamPI paper. Success rates (%) measure completion of the first through fifth tasks in a chained CALVIN ABC-to-D sequence; Avg. is the mean number of consecutively completed tasks out of five.
+The StreamPI paper also evaluates long-horizon temporal reasoning on CALVIN, where a policy must execute sequences of up to five consecutive tasks. Success rates (%) are reported at each sequence position; Avg. is the average number of consecutively completed tasks.
 
 | Method                | 1 | 2 | 3 | 4 | 5 | Avg. |
 | --------------------- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -360,7 +362,11 @@ If you find StreamPI useful in your research, please cite:
 @article{liu2026streampi,
   title   = {StreamPI: Streaming Multimodal Temporal Modeling for Vision-Language-Action Models},
   author  = {Liu, Zhe and Hou, Jinghua and Lu, Yuxiang and Yang, Zhenya and Fan, Xianzhe and Luo, Junwei and Li, Junyi and Han, Ruihua and Hou, Zhi and Zhao, Hengshuang},
-  journal = {arXiv preprint arXiv:XXXX.XXXXX},
+  journal = {arXiv preprint arXiv:2608.26067},
+  eprint  = {2608.26067},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.CV},
+  url     = {https://arxiv.org/abs/2608.26067},
   year    = {2026}
 }
 ```
