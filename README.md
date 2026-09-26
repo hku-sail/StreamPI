@@ -32,6 +32,10 @@
 </p>
 
 <p>
+<b>NeurIPS 2026</b>
+</p>
+
+<p>
   <a href="https://arxiv.org/abs/2608.26067"><img alt="arXiv: 2608.26067" src="https://img.shields.io/badge/arXiv-2608.26067-b31b1b.svg"></a>
   <a href="https://happinesslz.github.io/projects/StreamPI"><img alt="Project Page" src="https://img.shields.io/badge/Project_Page-StreamPI-82B366.svg"></a>
   <a href="./demo/realworld_demo.mp4"><img alt="Demo Video" src="https://img.shields.io/badge/Demo-2%3A07_MP4-7B61FF.svg"></a>
@@ -71,7 +75,7 @@ The animated preview showcases StreamPI on precise perception and memory-depende
 
 ## 📰 News
 
-- **August 30, 2026:** Code and model weights will be released.
+- **September 26, 2026:** StreamPI is accepted by NeurIPS 2026 🎉.
 - **August 26, 2026:** The paper is released on arXiv.
 
 ## ✨ Abstract
