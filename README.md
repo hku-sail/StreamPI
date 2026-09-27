@@ -74,7 +74,7 @@ Single-frame Vision-Language-Action (VLA) models such as $\pi_{0.5}$ cannot reta
 The animated preview showcases StreamPI on precise perception and memory-dependent manipulation tasks. Click it to play the full video.
 
 ## 📰 News
-
+- **September 27, 2026:** We will release the StreamPI model weights (Libero & CALVIN) within the next three weeks.
 - **September 26, 2026:** StreamPI is accepted by NeurIPS 2026 🎉.
 - **August 26, 2026:** The paper is released on arXiv.
 
@@ -381,11 +381,7 @@ If you find StreamPI useful in your research, please cite:
 @article{liu2026streampi,
   title   = {StreamPI: Streaming Multimodal Temporal Modeling for Vision-Language-Action Models},
   author  = {Liu, Zhe and Hou, Jinghua and Lu, Yuxiang and Yang, Zhenya and Fan, Xianzhe and Luo, Junwei and Li, Junyi and Han, Ruihua and Hou, Zhi and Zhao, Hengshuang},
-  journal = {arXiv preprint arXiv:2608.26067},
-  eprint  = {2608.26067},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.CV},
-  url     = {https://arxiv.org/abs/2608.26067},
+  journal={Advances in Neural Information Processing Systems},
   year    = {2026}
 }
 ```
