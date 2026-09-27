@@ -1003,7 +1003,7 @@ _CONFIGS = [
         data=LeRobotAgilexDataConfig(
             repo_id="agilex_data/shell_game",
             base_config=DataConfig(prompt_from_task=True, hist_horizon=5, hist_interval=5, enable_jitter=True),
-            assets=AssetsConfig(assets_dir=assets/streampi05, asset_id="shell_game"),
+            assets=AssetsConfig(assets_dir="assets/streampi05", asset_id="shell_game"),
         ),
         batch_size=128,
         num_workers=8,
