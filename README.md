@@ -37,7 +37,7 @@
 
 <p>
   <a href="https://arxiv.org/abs/2608.26067"><img alt="arXiv: 2608.26067" src="https://img.shields.io/badge/arXiv-2608.26067-b31b1b.svg"></a>
-  <a href="https://happinesslz.github.io/projects/StreamPI"><img alt="Project Page" src="https://img.shields.io/badge/Project_Page-StreamPI-82B366.svg"></a>
+  <a href="https://hku-sail.github.io/StreamPI"><img alt="Project Page" src="https://img.shields.io/badge/Project_Page-StreamPI-82B366.svg"></a>
   <a href="./demo/realworld_demo.mp4"><img alt="Demo Video" src="https://img.shields.io/badge/Demo-2%3A07_MP4-7B61FF.svg"></a>
 </p>
 
@@ -393,3 +393,4 @@ StreamPI is built on [openpi](https://github.com/Physical-Intelligence/openpi). 
 ## 📄 License
 
 This project is released under the terms described in [`LICENSE`](LICENSE). The Gemma model components are subject to the terms in [`LICENSE_GEMMA.txt`](LICENSE_GEMMA.txt).
+
