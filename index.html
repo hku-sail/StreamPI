@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="description" content="NeurIPS 2026: StreamPI adds parameter-free streaming temporal reasoning to Vision-Language-Action models through instruction-anchored modeling and efficient KV-cache inference.">
+  <meta property="og:title" content="StreamPI: Streaming Multimodal Temporal Modeling for Vision-Language-Action Models | NeurIPS 2026">
+  <meta property="og:description" content="Accepted at NeurIPS 2026. StreamPI equips single-frame VLAs with zero-parameter streaming temporal reasoning for robot manipulation.">
+  <meta property="og:url" content="https://hku-sail.github.io/StreamPI/">
+  <meta property="og:image" content="https://hku-sail.github.io/StreamPI/StreamPI_files/streampi_intro.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:title" content="StreamPI: Streaming Multimodal Temporal Modeling for Vision-Language-Action Models | NeurIPS 2026">
+  <meta name="twitter:description" content="Accepted at NeurIPS 2026. StreamPI equips single-frame VLAs with zero-parameter streaming temporal reasoning for robot manipulation.">
+  <meta name="twitter:image" content="https://hku-sail.github.io/StreamPI/StreamPI_files/streampi_intro.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="keywords" content="StreamPI, NeurIPS 2026, VLA, Vision-Language-Action, Temporal Modeling, Robotics, Streaming Inference">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="citation_title" content="StreamPI: Streaming Multimodal Temporal Modeling for Vision-Language-Action Models">
+  <meta name="citation_author" content="Zhe Liu">
+  <meta name="citation_author" content="Jinghua Hou">
+  <meta name="citation_author" content="Yuxiang Lu">
+  <meta name="citation_author" content="Zhenya Yang">
+  <meta name="citation_author" content="Xianzhe Fan">
+  <meta name="citation_author" content="Junwei Luo">
+  <meta name="citation_author" content="Junyi Li">
+  <meta name="citation_author" content="Ruihua Han">
+  <meta name="citation_author" content="Zhi Hou">
+  <meta name="citation_author" content="Hengshuang Zhao">
+  <meta name="citation_publication_date" content="2026">
+  <meta name="citation_conference_title" content="Neural Information Processing Systems (NeurIPS 2026)">
+  <meta name="citation_journal_title" content="Advances in Neural Information Processing Systems">
+  <meta name="citation_arxiv_id" content="2608.26067">
+  <meta name="citation_pdf_url" content="https://arxiv.org/pdf/2608.26067">
+
+  <link rel="canonical" href="https://hku-sail.github.io/StreamPI/">
+  <title>StreamPI | NeurIPS 2026 | Streaming Multimodal Temporal Modeling for VLAs</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=&#39;http://www.w3.org/2000/svg&#39; viewBox=&#39;0 0 100 100&#39;%3E%3Ctext y=&#39;.9em&#39; font-size=&#39;90&#39;%3E%F0%9F%93%B9%3C/text%3E%3C/svg%3E">
+  <link href="./StreamPI_files/fonts.css" rel="stylesheet">
+  <link rel="stylesheet" href="./StreamPI_files/bulma.min.css">
+  <link rel="stylesheet" href="./StreamPI_files/index.css">
+  <style>
+    .citation-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .copy-citation-button {
+      border: 1px solid #dbdbdb;
+      background: #fff;
+      color: #363636;
+      border-radius: 999px;
+      padding: 0.45rem 0.9rem;
+      font-size: 0.95rem;
+      line-height: 1;
+      cursor: pointer;
+      transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    .copy-citation-button:hover { background: #f5f5f5; border-color: #b5b5b5; }
+    .copy-citation-button.is-copied { background: #48c78e; border-color: #48c78e; color: #fff; }
+    .author-note { font-size: 0.9rem; color: #6b7280; margin-top: 0.4rem; }
+    .demo-carousel-img { width: 100%; height: auto; border-radius: 12px; box-shadow: 0 12px 24px rgba(15,23,42,0.1); }
+    .demo-video-grid { margin: 1rem 0 0.75rem; }
+    .demo-video-card { text-align: center; }
+    .demo-video-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; color: #ffffff; background: #000000; padding: 0.35rem 0.9rem; border-radius: 6px; display: inline-block; }
+    .affil-logo { height: 2.1em; width: auto; vertical-align: middle; margin-right: 0.35rem; display: inline-block; }
+    .affil-logo.ace { height: 1.6em; }
+    .demo-video-small { width: 100%; border-radius: 10px; box-shadow: 0 8px 20px rgba(15,23,42,0.10); background: #000; display: block; }
+    .figure-caption { text-align: center; color: #475569; font-size: 0.95rem; margin-top: 0.75rem; font-style: italic; }
+    .teaser .hero-body { padding-bottom: 1rem; }
+    .teaser-image { margin-top: 0.5rem; margin-bottom: 0; }
+    .teaser-summary { margin-top: 0.75rem; }
+    .section { padding: 1.75rem 1.5rem; }
+    .section h2.title.is-3 { margin-bottom: 0.75rem; }
+    .section-subtitle-spaced { margin-top: 1.25rem; margin-bottom: 0.5rem; }
+    .section-copy { margin-bottom: 0.75rem; }
+    .figure-centered { margin: 0; }
+    .method-figure { width: 100%; max-width: 100%; height: auto; object-fit: contain; margin: 0; }
+    .task-method-pi { background: #9ecae1; }
+    .task-method-streampi { background: #74c476; }
+    .task-bar-group { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; flex: 1 1 0; height: 100%; }
+    .task-bar-pair { display: flex; justify-content: center; align-items: flex-end; gap: 0.3rem; width: 100%; height: 100%; }
+    .task-bar-group .task-bar-wrap { flex: 0 0 auto; width: min(100%, 52px); }
+    .task-bar-label { font-family: 'Google Sans', 'Noto Sans', sans-serif; font-size: 0.8rem; color: #374151; margin-top: 0.5rem; text-align: center; white-space: nowrap; }
+    .coming-soon { cursor: default; }
+    .math-inline, .math-display { font-family: Cambria, 'Times New Roman', serif; }
+    .math-inline { white-space: nowrap; }
+    .math-display { display: block; text-align: center; font-size: 1.1rem; margin: 0.35rem 0; }
+    .news-section { padding-top: 0.75rem; padding-bottom: 1rem; }
+    .news-list { margin: 0; padding: 1rem 1.2rem; list-style: none; border: 1px solid #e5e7eb; border-radius: 14px; background: #f8fafc; }
+    .news-list li { display: flex; gap: 0.8rem; align-items: baseline; padding: 0.35rem 0; }
+    .news-date { flex: 0 0 7.5rem; font-weight: 700; color: #334155; }
+    .implementation-note { border-left: 4px solid #74c476; background: #f3faf5; border-radius: 0 12px 12px 0; padding: 1rem 1.15rem; margin-top: 1rem; }
+    .paper-glyph { font-size: 1.05em; line-height: 1; filter: grayscale(1) brightness(3); }
+    @media screen and (max-width: 600px) {
+      .news-list li { display: block; }
+      .news-date { display: block; margin-bottom: 0.1rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <section class="hero hero-top">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 is-size-3-mobile publication-title">StreamPI: Streaming Multimodal Temporal Modeling for Vision-Language-Action Models</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><a href="https://happinesslz.github.io/" target="_blank" rel="noopener noreferrer">Zhe Liu</a><sup>1*</sup>,</span>
+              <span class="author-block"><a href="https://scholar.google.com/citations?user=aoqtBAsAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Jinghua Hou</a><sup>1*</sup>,</span>
+              <span class="author-block"><a href="https://innovator-zero.github.io/" target="_blank" rel="noopener noreferrer">Yuxiang Lu</a><sup>1</sup>,</span>
+              <span class="author-block"><a href="https://huster-yzy.github.io/" target="_blank" rel="noopener noreferrer">Zhenya Yang</a><sup>1</sup>,</span>
+              <span class="author-block"><a href="https://www.linkedin.com/in/xianzhefan" target="_blank" rel="noopener noreferrer">Xianzhe Fan</a><sup>1</sup>,</span>
+              <span class="author-block"><a href="https://scholar.google.com/citations?user=6XibZaYAAAAJ&amp;hl=zh-CN" target="_blank" rel="noopener noreferrer">Junwei Luo</a><sup>1</sup>,</span>
+              <span class="author-block"><a href="https://provencestar.github.io/" target="_blank" rel="noopener noreferrer">Junyi Li</a><sup>1</sup>,</span>
+              <span class="author-block"><a href="https://scholar.google.com/citations?user=BMuEK90AAAAJ&amp;hl=zh-CN" target="_blank" rel="noopener noreferrer">Ruihua Han</a><sup>1</sup>,</span>
+              <span class="author-block"><a href="https://scholar.google.com/citations?user=vpjnH7AAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer">Zhi Hou</a><sup>2</sup>,</span>
+              <span class="author-block"><a href="https://i.cs.hku.hk/~hszhao/" target="_blank" rel="noopener noreferrer">Hengshuang Zhao</a><sup>1†</sup></span>
+            </div>
+            <div class="is-size-5 publication-authors publication-affiliations">
+              <span class="author-block"><sup>1</sup><img class="affil-logo" src="./StreamPI_files/hku_shield.svg" alt="The University of Hong Kong logo">The University of Hong Kong &nbsp; <sup>2</sup><img class="affil-logo ace" src="./StreamPI_files/ace-avatar-cropped.png" alt="ACE Robotics logo">ACE Robotics</span>
+            </div>
+            <div class="author-note"><sup>*</sup> Equal contribution. &nbsp; <sup>†</sup> Corresponding author.</div>
+            <p class="publication-venue">NeurIPS 2026</p>
+
+            <div class="has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a href="https://arxiv.org/abs/2608.26067" target="_blank" rel="noopener noreferrer" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon"><span class="paper-glyph" aria-hidden="true">📄</span></span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="https://github.com/hku-sail/StreamPI" target="_blank" rel="noopener noreferrer" class="external-link button is-normal is-rounded is-dark" title="Official StreamPI code repository">
+                    <span class="icon github-icon" aria-hidden="true">
+                      <svg viewBox="0 0 16 16" width="1em" height="1em" fill="currentColor">
+                        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.5-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.65 7.65 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"></path>
+                      </svg>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+
+            <div class="demo-video-grid">
+              <div class="columns is-multiline is-centered is-variable is-2">
+                <div class="column is-6-desktop is-6-tablet">
+                  <div class="demo-video-card">
+                    <h4 class="demo-video-title">Shell Game</h4>
+                    <video class="demo-video-small" src="./StreamPI_files/streampi_shell_game.mp4" poster="./StreamPI_files/streampi_shell_game_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="StreamPI shell game demonstration"></video>
+                  </div>
+                </div>
+                <div class="column is-6-desktop is-6-tablet">
+                  <div class="demo-video-card">
+                    <h4 class="demo-video-title">Rolling Object Grasping</h4>
+                    <video class="demo-video-small" src="./StreamPI_files/streampi_pick.mp4" poster="./StreamPI_files/streampi_pick_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="StreamPI rolling object grasping demonstration"></video>
+                  </div>
+                </div>
+                <div class="column is-6-desktop is-6-tablet">
+                  <div class="demo-video-card">
+                    <h4 class="demo-video-title">Pen Insertion</h4>
+                    <video class="demo-video-small" src="./StreamPI_files/streampi_insert.mp4" poster="./StreamPI_files/streampi_insert_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="StreamPI pen insertion demonstration"></video>
+                  </div>
+                </div>
+                <div class="column is-6-desktop is-6-tablet">
+                  <div class="demo-video-card">
+                    <h4 class="demo-video-title">Cup Insertion</h4>
+                    <video class="demo-video-small" src="./StreamPI_files/streampi_cup.mp4" poster="./StreamPI_files/streampi_cup_poster.jpg" autoplay muted loop playsinline preload="metadata" aria-label="StreamPI cup insertion demonstration"></video>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section news-section" aria-labelledby="news-heading">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3" id="news-heading">News</h2>
+      <ul class="news-list">
+        <li><span class="news-date">Sep 27, 2026</span><span>StreamPI model weights for LIBERO and CALVIN will be released within the next three weeks. Follow the <a href="https://github.com/hku-sail/StreamPI" target="_blank" rel="noopener noreferrer">official repository</a> for updates.</span></li>
+        <li><span class="news-date">Sep 26, 2026</span><span>StreamPI is accepted at <strong>NeurIPS 2026</strong>! 🎉</span></li>
+        <li><span class="news-date">Aug 26, 2026</span><span>StreamPI is released on <a href="https://arxiv.org/abs/2608.26067" target="_blank" rel="noopener noreferrer">arXiv</a>.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="hero teaser">
+    <div class="container is-max-desktop">
+      <div class="hero-body">
+        <div class="image-container teaser-image">
+          <img src="./StreamPI_files/streampi_intro.png" alt="Comparison of single-frame, window-based, and StreamPI streaming VLA paradigms" decoding="async" style="width: 100%; height: auto; object-fit: contain;">
+        </div>
+        <h3 class="subtitle teaser-summary has-text-justified">
+          State-of-the-art Vision-Language-Action models such as <span class="math-inline">π<sub>0.5</sub></span> process each observation independently, lacking historical context and precise spatial perception. <b>StreamPI</b> introduces streaming multimodal temporal modeling that treats every (visual observation, language instruction) pair as an atomic temporal unit. With intra-pair bidirectional attention and inter-pair causal attention, StreamPI adds temporal reasoning to single-frame VLAs <b>without introducing additional parameters</b> and supports flexible, asynchronous real-robot deployment.
+        </h3>
+      </div>
+    </div>
+  </section>
+
+  <section class="section hero is-light abstract-section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths abstract-card">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+            <p>
+              Vision-Language-Action (VLA) models have demonstrated effectiveness in robot manipulation, yet state-of-the-art models such as <span class="math-inline">π<sub>0.5</sub></span> operate under a single-frame paradigm, limiting their ability to retain past observations and develop precise spatial perception.
+              In this paper, we propose <b>StreamPI</b>, a streaming multimodal temporal modeling framework that equips single-frame VLA with temporal reasoning capability without introducing any additional parameters.
+              One core design is <i>instruction-anchored temporal modeling</i>. It treats each (visual observation, language instruction) pair as an atomic temporal unit: bidirectional attention within each pair enables cross-modal fusion, while causal attention across pairs preserves autoregressive streaming inference.
+              This ensures the language instruction serves as a persistent semantic anchor throughout task execution.
+              To bridge the gap between synchronous training and asynchronous real-robot deployment, we introduce a <i>random-interval streaming training</i> strategy: a proper inter-frame interval (e.g., every 3 frames) enables faster and smoother action execution. Beyond this, randomizing the interval further improves robustness to frame-timing perturbations, supporting asynchronous deployment in practice.
+              Furthermore, by leveraging the length extrapolation capability of the LLM backbone, StreamPI seamlessly inherits pretrained single-frame weights and supports flexible single-frame and multi-frame inference.
+              Experiments on real-robot tasks spanning memory-dependent and precise perception scenarios, as well as the simulation benchmark LIBERO, demonstrate that StreamPI outperforms <span class="math-inline">π<sub>0.5</sub></span> across diverse tasks.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3">StreamPI Framework</h2>
+      <h3 class="subtitle is-4 section-subtitle-spaced">Why Current VLAs Forget the Past</h3>
+      <div class="content has-text-justified section-copy">
+        <p>
+          Existing VLAs such as <span class="math-inline">π<sub>0</sub></span> and <span class="math-inline">π<sub>0.5</sub></span> operate in a single-frame paradigm: each action is predicted from one image observation without access to historical context. This design precludes two critical capabilities: memorizing and reasoning over past observations, and developing precise spatial perception through temporal aggregation.
+          Incorporating temporal context is non-trivial because naive concatenation of frames causes sequence length to grow linearly, dilutes language instructions over long horizons, and introduces a mismatch between fixed-interval training and asynchronous real-robot deployment.
+        </p>
+      </div>
+
+      <h3 class="subtitle is-4 section-subtitle-spaced">Instruction-Anchored Temporal Modeling</h3>
+      <div class="image-container figure-centered">
+        <img src="./StreamPI_files/streampi_method.png" alt="StreamPI instruction-anchored temporal modeling and random-interval sampling pipeline" loading="lazy" decoding="async" class="method-figure">
+      </div>
+      <div class="content has-text-justified section-copy">
+        <p>
+          StreamPI treats each time step as an atomic temporal unit that jointly encodes multi-view visual observations and the language instruction:
+        </p>
+        <p style="text-align: center;">
+          <span class="math-display"><b>u</b><sub>t</sub> = (<b>V</b><sub>t</sub>, <i>l</i><sub>t</sub>)</span>
+        </p>
+        <p>
+          <b>Intra-pair bidirectional attention</b> fuses visual tokens and the instruction within each unit:
+          <span class="math-inline"><b>h</b><sub>τ</sub> = Attn<sub>bi</sub>(<b>V</b><sub>τ</sub>, <i>l</i><sub>τ</sub>)</span>.
+          <b>Inter-pair causal attention</b> then aggregates historical fused representations autoregressively:
+          <span class="math-inline"><b>o</b><sub>t</sub> = Attn<sub>causal</sub>(<b>h</b><sub>t−T+1</sub>, …, <b>h</b><sub>t</sub>)</span>.
+          Because the instruction is re-anchored to every observation, the model maintains persistent task awareness, and the hierarchical attention mask is implemented without any new parameters.
+        </p>
+      </div>
+
+      <h3 class="subtitle is-4 section-subtitle-spaced">Random-Interval Streaming Training</h3>
+      <div class="content has-text-justified section-copy">
+        <p>
+          Real robots produce asynchronous observation streams with variable time gaps. During training, StreamPI independently samples the interval between adjacent historical observations from <span class="math-inline">δ<sub>i</sub> ∼ U[3, 7]</span> and selects older observations using cumulative temporal offsets.
+          A complementary temporal masking strategy randomly hides the earliest <span class="math-inline"><i>k</i></span> frames, simulating the incremental observation pattern of streaming inference.
+          Together, these mechanisms bridge the gap between synchronous training and asynchronous deployment.
+        </p>
+      </div>
+
+      <h3 class="subtitle is-4 section-subtitle-spaced">Streaming Inference</h3>
+      <div class="content has-text-justified section-copy">
+        <p>
+          At the initial timestamp, StreamPI encodes the current temporal unit, predicts an action chunk, and stores the resulting Key and Value representations. Each subsequent call encodes only the newly arrived unit, which attends to the cached history. The cache is bounded by the configured context length <span class="math-inline"><i>T</i></span> and is flushed before the next unit would exceed that limit.
+          This avoids repeatedly encoding past observations and keeps the additional streaming overhead modest as context grows.
+        </p>
+      </div>
+      <div class="implementation-note content has-text-justified">
+        <b>Official implementation.</b> StreamPI is built on <a href="https://github.com/Physical-Intelligence/openpi" target="_blank" rel="noopener noreferrer">openpi</a> and includes LIBERO, CALVIN, and ALOHA-style real-robot workflows, together with validated JAX multi-node distributed training. Code is available in the <a href="https://github.com/hku-sail/StreamPI" target="_blank" rel="noopener noreferrer">official repository</a>. See <a href="#news-heading">News</a> for the latest model weight release schedule.
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <h2 class="title is-3">Experiments</h2>
+      <h3 class="subtitle is-4 section-subtitle-spaced">Real-Robot Manipulation</h3>
+      <div class="content has-text-justified section-copy">
+        <p>
+          We evaluate StreamPI on AgileX PiperX 6-DoF arms in an ALOHA-style leader-follower setup with one front-view Intel RealSense D455 and two wrist-mounted D435 cameras. Each task uses 100 teleoperated demonstrations collected at 30 FPS. Evaluation covers two complementary task categories.
+          <b>Precise perception-dependent tasks</b> demand fine-grained geometric understanding, including <i>Cup Insertion into Cup Sleeve</i> and <i>Pen Insertion into Narrow Bottle</i>.
+          <b>Memory-dependent tasks</b> require recalling information from earlier observations, including <i>Rolling Object Grasping</i> and <i>Shell Game</i>.
+          As shown below, StreamPI substantially improves success rates over the single-frame <span class="math-inline">π<sub>0.5</sub></span> baseline across all four tasks.
+        </p>
+      </div>
+
+      <div class="task-chart" data-default-metric="score">
+        <div class="task-chart-toolbar">
+          <div class="task-chart-legend" aria-label="Methods">
+            <span class="task-legend-item">
+              <span class="task-legend-swatch task-method-pi"></span>
+              <span>π<sub>0.5</sub></span>
+            </span>
+            <span class="task-legend-item">
+              <span class="task-legend-swatch task-method-streampi"></span>
+              <span>StreamPI</span>
+            </span>
+          </div>
+        </div>
+        <div class="task-chart-panels">
+          <div class="task-chart-panel is-active" data-metric-panel="score">
+            <div class="task-chart-grid">
+              <div class="task-card task-card-score">
+                <div class="task-card-header task-card-header-left">
+                  <h4 class="task-card-title">Precise Perception-Dependent Tasks</h4>
+                </div>
+                <div class="task-plot">
+                  <div class="task-axis-label">Success Rate (%)</div>
+                  <div class="task-y-axis">
+                    <span>100</span>
+                    <span>80</span>
+                    <span>60</span>
+                    <span>40</span>
+                    <span>20</span>
+                    <span>0</span>
+                  </div>
+                  <div class="task-plot-area task-plot-score">
+                    <div class="task-bars task-bars-score">
+                      <div class="task-bar-group">
+                        <div class="task-bar-pair">
+                          <div class="task-bar-wrap">
+                            <div class="task-bar task-method-pi" style="height: 60%;" title="Cup Insertion: π0.5 = 60.0%">
+                              <span class="task-bar-value">60.0</span>
+                            </div>
+                          </div>
+                          <div class="task-bar-wrap">
+                            <div class="task-bar task-method-streampi" style="height: 92%;" title="Cup Insertion: StreamPI = 92.0%">
+                              <span class="task-bar-value">92.0</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="task-bar-label">Cup Insertion</div>
+                      </div>
+                      <div class="task-bar-group">
+                        <div class="task-bar-pair">
+                          <div class="task-bar-wrap">
+                            <div class="task-bar task-method-pi" style="height: 40.0%;" title="Pen Insertion: π0.5 = 40.0%">
+                              <span class="task-bar-value">40.0</span>
+                            </div>
+                          </div>
+                          <div class="task-bar-wrap">
+                            <div class="task-bar task-method-streampi" style="height: 66.7%;" title="Pen Insertion: StreamPI = 66.7%">
+                              <span class="task-bar-value">66.7</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="task-bar-label">Pen Insertion</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="task-card task-card-score">
+                <div class="task-card-header task-card-header-left">
+                  <h4 class="task-card-title">Memory-Dependent Tasks</h4>
+                </div>
+                <div class="task-plot">
+                  <div class="task-axis-label">Success Rate (%)</div>
+                  <div class="task-y-axis">
+                    <span>100</span>
+                    <span>80</span>
+                    <span>60</span>
+                    <span>40</span>
+                    <span>20</span>
+                    <span>0</span>
+                  </div>
+                  <div class="task-plot-area task-plot-score">
+                    <div class="task-bars task-bars-score">
+                      <div class="task-bar-group">
+                        <div class="task-bar-pair">
+                          <div class="task-bar-wrap">
+                            <div class="task-bar task-method-pi" style="height: 26.7%;" title="Rolling Object: π0.5 = 26.7%">
+                              <span class="task-bar-value">26.7</span>
+                            </div>
+                          </div>
+                          <div class="task-bar-wrap">
+                            <div class="task-bar task-method-streampi" style="height: 63.3%;" title="Rolling Object: StreamPI = 63.3%">
+                              <span class="task-bar-value">63.3</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="task-bar-label">Rolling Object</div>
+                      </div>
+                      <div class="task-bar-group">
+                        <div class="task-bar-pair">
+                          <div class="task-bar-wrap">
+                            <div class="task-bar task-method-pi" style="height: 46.7%;" title="Shell Game: π0.5 = 46.7%">
+                              <span class="task-bar-value">46.7</span>
+                            </div>
+                          </div>
+                          <div class="task-bar-wrap">
+                            <div class="task-bar task-method-streampi" style="height: 80.0%;" title="Shell Game: StreamPI = 80.0%">
+                              <span class="task-bar-value">80.0</span>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="task-bar-label">Shell Game</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="subtitle is-4 section-subtitle-spaced">LIBERO Simulation Benchmark</h3>
+      <div class="content has-text-justified">
+        <p>
+          Beyond real robots, we validate StreamPI on LIBERO, which comprises four suites of increasing complexity: LIBERO-Spatial, LIBERO-Object, LIBERO-Goal, and LIBERO-Long. StreamPI (<span class="math-inline"><i>T</i> = 5</span>) improves the average success rate from <b>96.9%</b> to <b>98.3%</b> over the single-frame <span class="math-inline">π<sub>0.5</sub></span> baseline, a gain of <b>1.4 points</b>. The largest gains are on LIBERO-Goal (<b>+2.8 points</b>) and LIBERO-Long (<b>+2.6 points</b>), while LIBERO-Spatial remains tied at 98.8%.
+        </p>
+      </div>
+      <div class="table-scroll" style="margin-top: 1rem;">
+        <table class="metrics-table metrics-table-tab2">
+          <thead>
+            <tr>
+              <th><span class="cell-center">Method</span></th>
+              <th><span class="cell-center">Spatial</span></th>
+              <th><span class="cell-center">Object</span></th>
+              <th><span class="cell-center">Goal</span></th>
+              <th><span class="cell-center">Long</span></th>
+              <th><span class="cell-center">Avg.</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="cell-center">Diffusion Policy</span></td><td><span class="cell-center">78.3</span></td><td><span class="cell-center">92.5</span></td><td><span class="cell-center">68.3</span></td><td><span class="cell-center">50.5</span></td><td><span class="cell-center">72.4</span></td></tr>
+            <tr><td><span class="cell-center">Octo</span></td><td><span class="cell-center">78.9</span></td><td><span class="cell-center">85.7</span></td><td><span class="cell-center">84.6</span></td><td><span class="cell-center">51.1</span></td><td><span class="cell-center">75.1</span></td></tr>
+            <tr><td><span class="cell-center">SpatialVLA</span></td><td><span class="cell-center">88.2</span></td><td><span class="cell-center">89.9</span></td><td><span class="cell-center">78.6</span></td><td><span class="cell-center">55.5</span></td><td><span class="cell-center">71.7</span></td></tr>
+            <tr><td><span class="cell-center">TraceVLA</span></td><td><span class="cell-center">84.6</span></td><td><span class="cell-center">85.2</span></td><td><span class="cell-center">75.1</span></td><td><span class="cell-center">54.1</span></td><td><span class="cell-center">74.8</span></td></tr>
+            <tr><td><span class="cell-center">OpenVLA</span></td><td><span class="cell-center">84.7</span></td><td><span class="cell-center">88.4</span></td><td><span class="cell-center">79.2</span></td><td><span class="cell-center">53.7</span></td><td><span class="cell-center">75.9</span></td></tr>
+            <tr><td><span class="cell-center">CoT-VLA</span></td><td><span class="cell-center">87.5</span></td><td><span class="cell-center">91.6</span></td><td><span class="cell-center">87.6</span></td><td><span class="cell-center">69.0</span></td><td><span class="cell-center">81.1</span></td></tr>
+            <tr><td><span class="cell-center">π<sub>0</sub>-FAST*</span></td><td><span class="cell-center">96.4</span></td><td><span class="cell-center">96.8</span></td><td><span class="cell-center">88.6</span></td><td><span class="cell-center">60.2</span></td><td><span class="cell-center">85.0</span></td></tr>
+            <tr><td><span class="cell-center">SmolVLA</span></td><td><span class="cell-center">93.0</span></td><td><span class="cell-center">94.0</span></td><td><span class="cell-center">91.0</span></td><td><span class="cell-center">77.0</span></td><td><span class="cell-center">88.8</span></td></tr>
+            <tr><td><span class="cell-center">GR00T-N1</span></td><td><span class="cell-center">94.4</span></td><td><span class="cell-center">97.6</span></td><td><span class="cell-center">93.0</span></td><td><span class="cell-center">90.6</span></td><td><span class="cell-center">93.9</span></td></tr>
+            <tr><td><span class="cell-center">UniVLA</span></td><td><span class="cell-center">95.4</span></td><td><span class="cell-center">98.8</span></td><td><span class="cell-center">93.6</span></td><td><span class="cell-center">94.0</span></td><td><span class="cell-center">95.4</span></td></tr>
+            <tr><td><span class="cell-center">FLOWER</span></td><td><span class="cell-center">97.1</span></td><td><span class="cell-center">96.7</span></td><td><span class="cell-center">95.6</span></td><td><span class="cell-center">93.5</span></td><td><span class="cell-center">95.7</span></td></tr>
+            <tr><td><span class="cell-center">CronusVLA</span></td><td><span class="cell-center">90.1</span></td><td><span class="cell-center">94.7</span></td><td><span class="cell-center">91.3</span></td><td><span class="cell-center">68.7</span></td><td><span class="cell-center">86.2</span></td></tr>
+            <tr><td><span class="cell-center">TriVLA</span></td><td><span class="cell-center">91.2</span></td><td><span class="cell-center">93.8</span></td><td><span class="cell-center">89.8</span></td><td><span class="cell-center">73.2</span></td><td><span class="cell-center">87.0</span></td></tr>
+            <tr><td><span class="cell-center">4D-VLA</span></td><td><span class="cell-center">93.8</span></td><td><span class="cell-center">92.8</span></td><td><span class="cell-center">95.6</span></td><td><span class="cell-center">86.5</span></td><td><span class="cell-center">92.2</span></td></tr>
+            <tr><td><span class="cell-center">CogACT</span></td><td><span class="cell-center">87.5</span></td><td><span class="cell-center">90.2</span></td><td><span class="cell-center">80.2</span></td><td><span class="cell-center">53.2</span></td><td><span class="cell-center">77.8</span></td></tr>
+            <tr><td><span class="cell-center">ST-π</span></td><td><span class="cell-center">98.4</span></td><td><span class="cell-center">98.3</span></td><td><span class="cell-center">96.9</span></td><td><span class="cell-center">94.3</span></td><td><span class="cell-center">97.3</span></td></tr>
+            <tr><td><span class="cell-center">MemoryVLA</span></td><td><span class="cell-center">98.4</span></td><td><span class="cell-center">98.4</span></td><td><span class="cell-center">96.4</span></td><td><span class="cell-center">93.4</span></td><td><span class="cell-center">96.5</span></td></tr>
+            <tr><td><span class="cell-center">π<sub>0</sub></span></td><td><span class="cell-center">96.8</span></td><td><span class="cell-center">98.8</span></td><td><span class="cell-center">95.8</span></td><td><span class="cell-center">85.2</span></td><td><span class="cell-center">94.2</span></td></tr>
+            <tr><td><span class="cell-center">π<sub>0.5</sub></span></td><td><span class="cell-center">98.8</span></td><td><span class="cell-center">98.2</span></td><td><span class="cell-center">96.8</span></td><td><span class="cell-center">92.4</span></td><td><span class="cell-center">96.9</span></td></tr>
+            <tr class="metrics-group-start"><td><span class="cell-center"><b>StreamPI (T=3)</b></span></td><td><span class="cell-center">98.6</span></td><td><span class="cell-center">98.6</span></td><td><span class="cell-center">98.6</span></td><td><span class="cell-center">93.8</span></td><td><span class="cell-center">97.5</span></td></tr>
+            <tr class="metrics-highlight-row"><td><span class="cell-center"><b>StreamPI (T=5)</b></span></td><td><span class="cell-center"><b>98.8</b></span></td><td><span class="cell-center"><b>99.8</b></span></td><td><span class="cell-center"><b>99.6</b></span></td><td><span class="cell-center"><b>95.0</b></span></td><td><span class="cell-center"><b>98.3</b></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="content has-text-justified section-copy">
+        <p>
+          <b>Table notes.</b> Success rates (%) on LIBERO. Bold denotes the best result per column. StreamPI (<span class="math-inline"><i>T</i> = 5</span>) achieves the highest average success rate and the strongest long-horizon performance.
+        </p>
+      </div>
+
+      <h3 class="subtitle is-4 section-subtitle-spaced">CALVIN Simulation Benchmark</h3>
+      <div class="content has-text-justified">
+        <p>
+          We further evaluate StreamPI on CALVIN (ABC&rarr;D), which measures long-horizon instruction following over chains of five consecutive tasks. StreamPI achieves an average chain length of <b>4.547</b>, outperforming both the single-frame <span class="math-inline">π<sub>0.5</sub></span> baseline (4.313) and MemoryVLA (4.090), with the advantage growing as the chain progresses.
+        </p>
+      </div>
+      <div class="table-scroll" style="margin-top: 1rem;">
+        <table class="metrics-table metrics-table-tab2">
+          <thead>
+            <tr>
+              <th><span class="cell-center">Method</span></th>
+              <th><span class="cell-center">1</span></th>
+              <th><span class="cell-center">2</span></th>
+              <th><span class="cell-center">3</span></th>
+              <th><span class="cell-center">4</span></th>
+              <th><span class="cell-center">5</span></th>
+              <th><span class="cell-center">Avg.</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="cell-center">MemoryVLA</span></td><td><span class="cell-center">94.8</span></td><td><span class="cell-center">87.4</span></td><td><span class="cell-center">81.4</span></td><td><span class="cell-center">75.9</span></td><td><span class="cell-center">69.4</span></td><td><span class="cell-center">4.090</span></td></tr>
+            <tr><td><span class="cell-center">π<sub>0.5</sub></span></td><td><span class="cell-center">94.2</span></td><td><span class="cell-center">88.7</span></td><td><span class="cell-center">85.7</span></td><td><span class="cell-center">83.2</span></td><td><span class="cell-center">79.5</span></td><td><span class="cell-center">4.313</span></td></tr>
+            <tr class="metrics-highlight-row"><td><span class="cell-center"><b>StreamPI (T=5)</b></span></td><td><span class="cell-center"><b>96.9</b></span></td><td><span class="cell-center"><b>93.6</b></span></td><td><span class="cell-center"><b>90.7</b></span></td><td><span class="cell-center"><b>88.5</b></span></td><td><span class="cell-center"><b>85.0</b></span></td><td><span class="cell-center"><b>4.547</b></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="content has-text-justified section-copy">
+        <p>
+          <b>Table notes.</b> Success rates (%) for completing the first through fifth task in a chained sequence on CALVIN, and the average number of consecutive tasks completed (Avg., out of 5). Bold denotes the best result per column.
+        </p>
+      </div>
+
+      <h3 class="subtitle is-4 section-subtitle-spaced">Ablation Studies</h3>
+      <div class="content has-text-justified">
+        <p>
+          <b>Attention design.</b> At <span class="math-inline"><i>T</i> = 5</span>, bidirectional intra-pair attention improves average success by <b>2.8 points</b> and LIBERO-Long by <b>4.4 points</b> over causal intra-pair attention, confirming that strong vision-language fusion inside each temporal unit is essential. Comparing bidirectional <span class="math-inline"><i>T</i> = 5</span> against the single-frame ablation adds <b>1.8 points</b> on average and <b>3.0 points</b> on LIBERO-Long.
+        </p>
+        <p>
+          <b>Random-interval training.</b> Compared with a fixed interval <span class="math-inline">δ = 1</span>, random-interval training improves the average success rate from 96.4 to 97.5 (<span class="math-inline"><i>T</i> = 3</span>) and from 97.0 to 98.3 (<span class="math-inline"><i>T</i> = 5</span>), especially benefiting long-horizon tasks.
+        </p>
+        <p>
+          <b>Cross-stream generalization.</b> A model trained with <span class="math-inline"><i>T</i> = 5</span> reaches 97.4% average success at test-time <span class="math-inline"><i>T</i> = 3</span> and 97.1% at <span class="math-inline"><i>T</i> = 1</span>, both above the 96.5% single-frame ablation baseline.
+        </p>
+      </div>
+
+      <h3 class="subtitle is-4 section-subtitle-spaced">Streaming Inference Efficiency</h3>
+      <div class="content has-text-justified">
+        <p>
+          Mean latency over 20 real-robot trials on a single NVIDIA GeForce RTX 4090. Extending the context from one to five frames adds only <b>9.2 ms</b>.
+        </p>
+      </div>
+      <div class="table-scroll" style="margin-top: 1rem;">
+        <table class="metrics-table metrics-table-tab2">
+          <thead><tr><th><span class="cell-center">Streaming frames</span></th><th><span class="cell-center">Inference time (ms)</span></th><th><span class="cell-center">Overhead vs. T=1</span></th></tr></thead>
+          <tbody>
+            <tr><td><span class="cell-center">1</span></td><td><span class="cell-center">94.4 ± 3.4</span></td><td><span class="cell-center">—</span></td></tr>
+            <tr><td><span class="cell-center">3</span></td><td><span class="cell-center">97.9 ± 5.1</span></td><td><span class="cell-center">3.5 ms</span></td></tr>
+            <tr class="metrics-highlight-row"><td><span class="cell-center"><b>5</b></span></td><td><span class="cell-center"><b>103.6 ± 6.3</b></span></td><td><span class="cell-center"><b>9.2 ms</b></span></td></tr>
+            <tr><td><span class="cell-center">8</span></td><td><span class="cell-center">110.9 ± 10.2</span></td><td><span class="cell-center">16.5 ms</span></td></tr>
+            <tr><td><span class="cell-center">10</span></td><td><span class="cell-center">117.9 ± 16.5</span></td><td><span class="cell-center">23.5 ms</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section hero is-light">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths abstract-card">
+          <h2 class="title is-3">Conclusion</h2>
+          <div class="content has-text-justified">
+            <p>
+              We present <b>StreamPI</b>, a streaming multimodal temporal modeling framework that equips VLA models with robust temporal awareness for robot manipulation. By treating (image, text) pairs as atomic temporal units and combining intra-pair bidirectional attention with inter-pair causal attention, StreamPI captures cross-frame geometric context and maintains persistent instruction grounding over long horizons without introducing additional parameters. Random-interval streaming training bridges the gap between fixed-interval training and asynchronous deployment. Experiments on real-robot tasks, LIBERO, and CALVIN show that StreamPI consistently outperforms the single-frame baseline, with notable gains on perception-sensitive, memory-dependent, and long-horizon tasks.
+            </p>
+            <p>
+              <b>Limitations and outlook.</b> Training still loads all temporal frames jointly, making extremely long contexts expensive, and random-interval training does not fully resolve extreme deployment asynchrony. Promising directions include training beyond 100 frames and adaptive KV-cache pruning.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <div class="citation-header">
+        <h2 class="title">Citation</h2>
+        <button class="copy-citation-button" type="button" data-copy-target="citation-bibtex">Copy</button>
+      </div>
+      <p>If you find StreamPI useful in your research, please cite our NeurIPS 2026 paper:</p>
+      <pre><code id="citation-bibtex">
+@article{liu2026streampi,
+  title={StreamPI: Streaming Multimodal Temporal Modeling for Vision-Language-Action Models},
+  author={Liu, Zhe and Hou, Jinghua and Lu, Yuxiang and Yang, Zhenya and Fan, Xianzhe and Luo, Junwei and Li, Junyi and Han, Ruihua and Hou, Zhi and Zhao, Hengshuang},
+  journal={Advances in Neural Information Processing Systems},
+  year={2026}
+}
+      </code></pre>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This page was built using the <a href="https://github.com/eliahuhorwitz/Academic-project-page-template" target="_blank" rel="noopener noreferrer">Academic Project Page Template</a> which was adopted from
+              the <a href="https://nerfies.github.io/" target="_blank" rel="noopener noreferrer">Nerfies</a> project
+              page.
+              <br> This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" target="_blank">Creative
+                Commons
+                Attribution-ShareAlike 4.0 International License</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="./StreamPI_files/index.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var copyButton = document.querySelector('[data-copy-target="citation-bibtex"]');
+      var citationBlock = document.getElementById('citation-bibtex');
+      if (!copyButton || !citationBlock) return;
+      var defaultLabel = 'Copy';
+      var copiedLabel = 'Copied!';
+      var resetTimer;
+      function updateButtonLabel(label, copied) {
+        copyButton.textContent = label;
+        copyButton.classList.toggle('is-copied', copied);
+      }
+      async function copyCitation() {
+        var citationText = citationBlock.textContent.replace(/^\s+|\s+$/g, '');
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(citationText);
+          } else {
+            var textArea = document.createElement('textarea');
+            textArea.value = citationText;
+            textArea.setAttribute('readonly', '');
+            textArea.style.position = 'absolute';
+            textArea.style.left = '-9999px';
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+          }
+          updateButtonLabel(copiedLabel, true);
+          window.clearTimeout(resetTimer);
+          resetTimer = window.setTimeout(function () { updateButtonLabel(defaultLabel, false); }, 1800);
+        } catch (error) {
+          updateButtonLabel('Failed', false);
+          window.clearTimeout(resetTimer);
+          resetTimer = window.setTimeout(function () { updateButtonLabel(defaultLabel, false); }, 1800);
+        }
+      }
+      copyButton.addEventListener('click', copyCitation);
+    });
+  </script>
+
+</body>
+</html>
